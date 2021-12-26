@@ -1,0 +1,54 @@
+= doas sudo shim
+:proj-name: doas-sudo-shim
+:gh-name: jirutka/{proj-name}
+:version: 0.0.0
+
+This is a shim for the `sudo` command that uses https://www.mankier.com/1/doas[doas].
+It supports only a subset of the `sudo` options that have an equivalent in `doas`, plus option `-i` (`--login`).
+Long options are supported.
+
+
+== Requirements
+
+* http://pubs.opengroup.org/onlinepubs/9699919799/utilities/V3_chap02.html[POSIX-sh] compatible shell (e.g. Busybox ash, dash, ZSH, bash, …)
+* `awk`, `cat`, `getent`, `getopt` (BSD, Busybox or GNU)
+* `doas` (https://github.com/Duncaen/OpenDoas[OpenDoas] or from OpenBSD)
+* (https://github.com/asciidoctor/asciidoctor[Asciidoctor] to build a man page)
+
+
+== Installation
+
+=== On Alpine Linux
+
+Install package https://pkgs.alpinelinux.org/packages?name={proj-name}[{proj-name}] from the Alpine’s Edge repository:
+
+[source, sh, subs="+attributes"]
+apk add {proj-name}
+
+
+=== From Tarball
+
+[source, sh, subs="+attributes"]
+wget https://github.com/{gh-name}/archive/v{version}/{proj-name}-{version}.tar.gz
+tar -xzf {proj-name}-{version}.tar.gz
+cd {proj-name}-{version}
+make install DESTDIR=/ PREFIX=/usr/local
+
+...or just download the link:https://raw.githubusercontent.com/{gh-name}/v{version}/sudo[sudo] script directly.
+
+
+== Usage
+
+Read man page link:sudo.1.adoc[sudo(1)].
+
+
+== See Also
+
+* https://www.mankier.com/1/doas[doas(1)]
+* https://www.mankier.com/8/sudo[sudo(8)]
+
+
+== License
+
+This project is licensed under http://opensource.org/licenses/ISC/[ISC License].
+For the full text of the license, see the link:LICENSE[LICENSE] file.

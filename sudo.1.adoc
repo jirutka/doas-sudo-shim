@@ -1,0 +1,106 @@
+= sudo(1)
+:doctype: manpage
+:repo-uri: https://github.com/jirutka/doas-sudo-shim
+:issues-uri: {repo-uri}/issues
+ifdef::backend-manpage[]
+:doas: pass:q[*doas(1)*]
+:doas-conf: pass:q[*doas.conf(5)*]
+:sudo: pass:q[*sudo(8)*]
+endif::[]
+ifndef::backend-manpage[]
+:doas: https://www.mankier.com/1/doas[doas(1)]
+:doas-conf: https://www.mankier.com/5/doas.conf[doas.conf(5)]
+:sudo: https://www.mankier.com/8/sudo[sudo(8)]
+endif::[]
+
+
+== NAME
+
+sudo - execute a command as another user using doas
+
+
+== SYNOPSIS
+
+*sudo* (-i | -s) [-n] [-u <__user__>] [<__command__> [--] [<__args__>...]] +
+*sudo* [-ins] [-u <__user__>] <__command__> [--] [<__args__>...] +
+*sudo* [-h]
+
+
+== DESCRIPTION
+
+This is not the original {sudo}, but a shim for the `sudo` command that uses {doas}.
+It supports only a subset of the {sudo} options that have an equivalent in {doas}, plus option *-i* (*--login*).
+Long options are supported.
+
+See {doas} and {sudo} for more information.
+
+
+== OPTIONS
+
+*-i*, *--login*::
+Run the shell specified by the target __user__`'s password database entry as a login shell.
+This means that login-specific resource files such as `.profile`, `.bash_profile` or `.login` will be read by the shell.
+If a _command_ is specified, it is passed to the shell for execution via the shell`'s *-c* option.
+If no _command_ is specified, an interactive shell is executed.
+This shim attempts to change to that __user__`'s home directory right after running the shell.
+
+*-n*, *--non-interactive*::
+Non interactive mode, fail if the matching rule doesn`'t have the `nopass` option.
+
+*-s*, *--shell*::
+Run the shell specified by the `SHELL` environment variable if it is set or the shell specified by the invoking user`'s password database entry.
+If a command is specified, it is passed to the shell for execution via the shell`'s *-c* option.
+If no command is specified, an interactive shell is executed.
+Note that most shells behave differently when a command is specified as compared to an interactive session; consult the shell`'s manual for details.
+
+*-u* <__user__>, *--user* <__user__>::
+Run the _command_ as a _user_, other than the default target user (usually `root`).
+The user may be either a user name or a numeric user-ID (UID).
+Unlike in the original {sudo}, numeric UIDs does not have to be prefixed with the '`#`' character and only UIDs listed in the password database are allowed.
+
+*-h*, *--help*::
+Print help message and exit.
+
+
+== FILES
+
+Refer to {doas}.
+
+
+== ENVIRONMENT
+
+This shim sets the following environment variables for compatibility with {sudo}.
+However, they must be explicitly allowed in {doas-conf} (using `setenv` or `keepenv`) to be exported into the created environment.
+
+*SUDO_GID*::
+Set to the group-ID of the user who invoked *sudo*.
+
+*SUDO_UID*::
+Set to the user-ID of the user who invoked *sudo*.
+
+*SUDO_USER*::
+Set to the login name of the user who invoked *sudo*.
+
+Refer to {doas} for more information.
+
+
+== EXIT CODES
+
+Refer to {doas}.
+
+
+== AUTHORS
+
+Jakub Jirutka
+
+
+== REPORTING BUGS
+
+Report bugs to the project`'s issue tracker at {issues-uri}.
+
+
+== SEE ALSO
+
+{doas}
+{doas-conf}
+{sudo}

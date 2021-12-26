@@ -1,0 +1,59 @@
+#!/bin/sh
+set -u
+
+help() {
+	cat <<-EOF
+	Usage:
+	  sudo (-i | -s) [-n] [-u <user>] [<command> [--] [<args>...]]
+	  sudo [-ins] [-u <user>] <command> [--] [<args>...]
+	  sudo [-h]
+
+	Execute a command as another user using doas(1).
+
+	This is not the original sudo, but the doas shim for sudo. It supports only
+	a subset of the sudo options that have an equivalent in doas, plus option -i
+	(--login). Long options are supported. Refer to sudo(1) for more information.
+	EOF
+}
+
+if [ $# -eq 0 ]; then
+	help >&2
+	exit 1
+fi
+
+opts=$(getopt -n sudo -o nsu:ih -l non-interactive,shell,user:,login,help -- "$@") || {
+	help >&2
+	exit 1
+}
+eval set -- "$opts"
+
+flags=
+user=
+login_shell=
+while [ $# -gt 0 ]; do
+	case "$1" in
+		-n | --non-interactive) flags="$flags -n";;
+		-s | --shell) flags="$flags -s";;
+		-u | --user) user=${2#\#}; shift;;
+		-i | --login) login_shell=$(getent passwd "${user:-root}" | awk -F: '{print $NF}');;
+		-h | --help) help; exit 0;;
+		--) shift; break;;
+	esac
+	shift
+done
+
+export SUDO_GID=$(id -g)
+export SUDO_UID=$(id -u)
+export SUDO_USER=$(id -un)
+
+_doas() {
+	exec doas $flags ${user:+-u "$user"} "$@"
+}
+
+if [ -z "$login_shell" ]; then
+	_doas -- "$@"
+elif [ $# -eq 0 ]; then
+	_doas -- "$login_shell" -l -c 'cd "$HOME"; exec "$0"'
+else
+	_doas -- "$login_shell" -l -c 'cd "$HOME"; "$0" "$@"' "$@"
+fi
