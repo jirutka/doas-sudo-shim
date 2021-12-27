@@ -24,22 +24,22 @@ if [ $# -eq 0 ]; then
 fi
 
 # Note: "+" disables optional option parameters
-opts=$(getopt -n sudo -o +nsu:ih -l non-interactive,shell,user:,login,help -- "$@") || {
+opts=$(getopt -n sudo -o +insu:h -l login,non-interactive,shell,user:,help -- "$@") || {
 	help >&2
 	exit 1
 }
 eval set -- "$opts"
 
+flag_i=
 flag_n=
 flag_s=
-flag_i=
 user=
 while [ $# -gt 0 ]; do
 	case "$1" in
+		-i | --login) flag_i='-i';;
 		-n | --non-interactive) flag_n='-n';;
 		-s | --shell) flag_s='-s';;
 		-u | --user) user=${2#\#}; shift;;
-		-i | --login) flag_i='-i';;
 		-h | --help) help; exit 0;;
 		--) shift; break;;
 	esac
@@ -51,10 +51,6 @@ if [ "$flag_i" ] && [ "$flag_s" ]; then
 	exit 1
 fi
 
-export SUDO_GID=$(id -g)
-export SUDO_UID=$(id -u)
-export SUDO_USER=$(id -un)
-
 _doas() {
 	exec doas $flag_n ${user:+-u "$user"} "$@"
 }
@@ -63,6 +59,10 @@ user_shell() {
 	shell=$(getent passwd "${user:-root}" | awk -F: '{print $NF}')
 	printf '%s' "${shell:-sh}"
 }
+
+export SUDO_GID=$(id -g)
+export SUDO_UID=$(id -u)
+export SUDO_USER=$(id -un)
 
 if [ $# -eq 0 ]; then
 	if [ "$flag_i" ]; then
