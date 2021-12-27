@@ -29,33 +29,49 @@ opts=$(getopt -n sudo -o nsu:ih -l non-interactive,shell,user:,login,help -- "$@
 }
 eval set -- "$opts"
 
-flags=
+flag_n=
+flag_s=
+flag_i=
 user=
-login_shell=
 while [ $# -gt 0 ]; do
 	case "$1" in
-		-n | --non-interactive) flags="$flags -n";;
-		-s | --shell) flags="$flags -s";;
+		-n | --non-interactive) flag_n='-n';;
+		-s | --shell) flag_s='-s';;
 		-u | --user) user=${2#\#}; shift;;
-		-i | --login) login_shell=$(getent passwd "${user:-root}" | awk -F: '{print $NF}');;
+		-i | --login) flag_i='-i';;
 		-h | --help) help; exit 0;;
 		--) shift; break;;
 	esac
 	shift
 done
 
+if [ "$flag_i" ] && [ "$flag_s" ]; then
+	echo "sudo: you may not specify both the '-i' and '-s' options" >&2
+	exit 1
+fi
+
 export SUDO_GID=$(id -g)
 export SUDO_UID=$(id -u)
 export SUDO_USER=$(id -un)
 
 _doas() {
-	exec doas $flags ${user:+-u "$user"} "$@"
+	exec doas $flag_n ${user:+-u "$user"} "$@"
 }
 
-if [ -z "$login_shell" ]; then
-	_doas -- "$@"
-elif [ $# -eq 0 ]; then
-	_doas -- "$login_shell" -c 'cd "$HOME"; exec "$0" -l'
+user_shell() {
+	getent passwd "${user:-root}" | awk -F: '{print $NF}' || echo 'sh'
+}
+
+if [ $# -eq 0 ]; then
+	if [ "$flag_i" ]; then
+		_doas -- "$(user_shell)" -c 'cd "$HOME"; exec "$0" -l'
+	else
+		_doas $flag_s
+	fi
+elif [ "$flag_i" ]; then
+	_doas -- "$(user_shell)" -l -c 'cd "$HOME"; "$0" "$@"' "$@"
+elif [ "$flag_s" ]; then
+	_doas -- "${SHELL:-$(user_shell)}" -c '"$0" "$@"' "$@"
 else
-	_doas -- "$login_shell" -l -c 'cd "$HOME"; "$0" "$@"' "$@"
+	_doas -- "$@"
 fi
