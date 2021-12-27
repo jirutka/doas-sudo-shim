@@ -59,7 +59,8 @@ _doas() {
 }
 
 user_shell() {
-	getent passwd "${user:-root}" | awk -F: '{print $NF}' || echo 'sh'
+	shell=$(getent passwd "${user:-root}" | awk -F: '{print $NF}')
+	printf '%s' "${shell:-sh}"
 }
 
 if [ $# -eq 0 ]; then
