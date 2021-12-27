@@ -13,6 +13,8 @@ help() {
 	This is not the original sudo, but the doas shim for sudo. It supports only
 	a subset of the sudo options (both short and long) that have an equivalent in
 	doas, plus option -i (--login). Refer to sudo(1) for more information.
+
+	Please report bugs at <https://github.com/jirutka/doas-sudo-shim/issues>.
 	EOF
 }
 
