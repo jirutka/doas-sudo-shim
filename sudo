@@ -53,7 +53,7 @@ _doas() {
 if [ -z "$login_shell" ]; then
 	_doas -- "$@"
 elif [ $# -eq 0 ]; then
-	_doas -- "$login_shell" -l -c 'cd "$HOME"; exec "$0"'
+	_doas -- "$login_shell" -c 'cd "$HOME"; exec "$0" -l'
 else
 	_doas -- "$login_shell" -l -c 'cd "$HOME"; "$0" "$@"' "$@"
 fi
