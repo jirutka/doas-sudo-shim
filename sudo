@@ -23,7 +23,8 @@ if [ $# -eq 0 ]; then
 	exit 1
 fi
 
-opts=$(getopt -n sudo -o nsu:ih -l non-interactive,shell,user:,login,help -- "$@") || {
+# Note: "+" disables optional option parameters
+opts=$(getopt -n sudo -o +nsu:ih -l non-interactive,shell,user:,login,help -- "$@") || {
 	help >&2
 	exit 1
 }
