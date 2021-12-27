@@ -3,7 +3,7 @@
 :gh-name: jirutka/{proj-name}
 :version: 0.1.0
 
-This is a shim for the `sudo` command that uses https://www.mankier.com/1/doas[doas].
+This is a shim for the `sudo` command that utilizes https://www.mankier.com/1/doas[doas].
 It supports only a subset of the `sudo` options that have an equivalent in `doas`, plus option `-i` (`--login`).
 Long options are supported.
 
