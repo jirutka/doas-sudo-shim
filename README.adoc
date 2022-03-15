@@ -25,6 +25,16 @@ Install package https://pkgs.alpinelinux.org/packages?name={proj-name}[{proj-nam
 apk add {proj-name}
 
 
+=== On Arch Linux
+
+Install package https://aur.archlinux.org/packages/{proj-name}[{proj-name}] from AUR:
+
+[source, sh, subs="+attributes"]
+yay -S {proj-name}
+
+Or use another AUR helper.
+
+
 === From Tarball
 
 [source, sh, subs="+attributes"]
