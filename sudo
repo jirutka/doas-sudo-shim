@@ -56,8 +56,7 @@ _doas() {
 }
 
 user_shell() {
-	shell=$(getent passwd "${user:-root}" | awk -F: '{print $NF}')
-	printf '%s' "${shell:-sh}"
+	getent passwd "${user:-root}" | awk -F: 'END {print $NF ? $NF : "sh"}'
 }
 
 export SUDO_GID=$(id -g)
