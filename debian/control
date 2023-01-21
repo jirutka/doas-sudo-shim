@@ -1,0 +1,20 @@
+Source: doas-sudo-shim
+Section: admin
+Priority: optional
+Maintainer: Bernhard Ehlers <none@b-ehlers.de>
+Build-Depends: debhelper-compat (= 13), asciidoctor
+Standards-Version: 4.5.1
+Homepage: https://github.com/jirutka/doas-sudo-shim
+VCS-Git: https://github.com/jirutka/doas-sudo-shim.git
+VCS-Browser: https://github.com/jirutka/doas-sudo-shim/tree/master
+
+Package: doas-sudo-shim
+Architecture: all
+Multi-Arch: foreign
+Depends: doas
+Conflicts: sudo
+Provides: sudo
+Description: sudo shim for doas
+ This is a shim for the sudo command that utilizes doas.
+ It supports only a subset of the sudo options (both short and long variants)
+ that have an equivalent in doas, plus option -i (--login).

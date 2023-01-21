@@ -1,0 +1,5 @@
+doas-sudo-shim (0.1.1-1) unstable; urgency=low
+
+  * First version
+
+ -- Bernhard Ehlers <none@b-ehlers.de>  Sat, 03 Dec 2022 11:00:58 +0000
