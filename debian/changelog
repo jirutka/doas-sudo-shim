@@ -1,3 +1,9 @@
+doas-sudo-shim (0.1.1-2) unstable; urgency=low
+
+  * Add opendoas as a possible dependency
+
+ -- Bernhard Ehlers <none@b-ehlers.de>  Fri, 17 Feb 2023 14:41:41 +0100
+
 doas-sudo-shim (0.1.1-1) unstable; urgency=low
 
   * First version

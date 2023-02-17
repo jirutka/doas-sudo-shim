@@ -11,7 +11,7 @@ VCS-Browser: https://github.com/jirutka/doas-sudo-shim/tree/master
 Package: doas-sudo-shim
 Architecture: all
 Multi-Arch: foreign
-Depends: doas
+Depends: opendoas | doas
 Conflicts: sudo
 Provides: sudo
 Description: sudo shim for doas
