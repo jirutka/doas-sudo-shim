@@ -3,12 +3,17 @@ set -u
 
 help() {
 	cat <<-EOF
-	Usage:
-	  sudo (-i | -s) [-n] [-u <user>] [<command> [--] [<args>...]]
-	  sudo [-ins] [-u <user>] <command> [--] [<args>...]
-	  sudo [-h]
+        sudo - execute a command as another user using doas(1)
 
-	Execute a command as another user using doas(1).
+        usage: sudo -h
+        usage: sudo [-n] [-u user] [-i|-s] [<command>]
+
+        Options:
+          -h, --help                    display help message and exit
+          -i, --login                   run login shell as the target user; a command may also be specified
+          -n, --non-interactive         non-interactive mode, no prompts are used
+          -s, --shell                   run shell as the target user; a command may also be specified
+          --                            stop processing command line arguments
 
 	This is not the original sudo, but the doas shim for sudo. It supports only
 	a subset of the sudo options (both short and long) that have an equivalent in
