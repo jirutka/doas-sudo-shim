@@ -23,26 +23,26 @@ if [ $# -eq 0 ]; then
 	exit 1
 fi
 
-# Note: "+" disables optional option parameters
-opts=$(getopt -n sudo -o +insu:h -l login,non-interactive,shell,user:,help -- "$@") || {
-	help >&2
-	exit 1
-}
-eval set -- "$opts"
-
 flag_i=
 flag_n=
 flag_s=
 user=
 while [ $# -gt 0 ]; do
 	case "$1" in
-		-i | --login) flag_i='-i';;
-		-n | --non-interactive) flag_n='-n';;
-		-s | --shell) flag_s='-s';;
-		-u | --user) user=${2#\#}; shift;;
-		-h | --help) help; exit 0;;
-		--) shift; break;;
+		--) shift; break ;;
+		--*) opts="$1" ;;
+		-*) opts=$(printf '%s' "$1" | awk -F '' '{OFS=" -";$1=""}1') ;;
+		*) break ;;
 	esac
+	for opt in ${opts:-}; do
+		case "$opt" in
+			-i | --login) flag_i='-i' ;;
+			-n | --non-interactive) flag_n='-n' ;;
+			-s | --shell) flag_s='-s' ;;
+			-u | --user) user=${2#\#}; shift ;;
+			*) help; exit 1 ;;
+		esac
+	done
 	shift
 done
 
