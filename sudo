@@ -4,8 +4,8 @@ set -u
 help() {
 	cat <<-EOF
 	Usage:
-	  sudo (-i | -s) [-n] [-u <user>] [<command> [--] [<args>...]]
-	  sudo [-ins] [-u <user>] <command> [--] [<args>...]
+	  sudo (-i | -s) [-n] [-k] [-u <user>] [<command> [--] [<args>...]]
+	  sudo [-insk] [-u <user>] <command> [--] [<args>...]
 	  sudo [-h]
 
 	Execute a command as another user using doas(1).
@@ -24,7 +24,7 @@ if [ $# -eq 0 ]; then
 fi
 
 # Note: "+" disables optional option parameters
-opts=$(getopt -n sudo -o +insu:h -l login,non-interactive,shell,user:,help -- "$@") || {
+opts=$(getopt -n sudo -o +insu:kh -l login,non-interactive,shell,user:,reset-timestamp,help -- "$@") || {
 	help >&2
 	exit 1
 }
@@ -33,6 +33,7 @@ eval set -- "$opts"
 flag_i=
 flag_n=
 flag_s=
+flag_k=
 user=
 while [ $# -gt 0 ]; do
 	case "$1" in
@@ -40,6 +41,7 @@ while [ $# -gt 0 ]; do
 		-n | --non-interactive) flag_n='-n';;
 		-s | --shell) flag_s='-s';;
 		-u | --user) user=${2#\#}; shift;;
+		-k | --reset-timestamp) flag_k='-L';;
 		-h | --help) help; exit 0;;
 		--) shift; break;;
 	esac
@@ -70,6 +72,8 @@ export SUDO_USER=$(id -un)
 if [ $# -eq 0 ]; then
 	if [ "$flag_i" ]; then
 		_doas -- "$(user_shell)" -c 'cd "$HOME"; exec "$0" -l'
+	elif [ "$flag_k" ]; then
+		exec doas $flag_k ${user:+-u "$user"}
 	else
 		_doas $flag_s
 	fi
@@ -77,6 +81,9 @@ elif [ "$flag_i" ]; then
 	_doas -- "$(user_shell)" -l -c 'cd "$HOME"; "$0" "$@"' "$@"
 elif [ "$flag_s" ]; then
 	_doas -- "${SHELL:-$(user_shell)}" -c '"$0" "$@"' "$@"
+elif [ "$flag_k" ]; then
+	doas $flag_k ${user:+-u "$user"}
+	doas $flag_n ${user:+-u "$user"} "$@"
 else
 	_doas -- "$@"
 fi
