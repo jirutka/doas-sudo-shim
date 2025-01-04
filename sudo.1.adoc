@@ -21,8 +21,8 @@ sudo - execute a command as another user using doas
 
 == SYNOPSIS
 
-*sudo* (-i | -s) [-n] [-u <__user__>] [<__command__> [--] [<__args__>...]] +
-*sudo* [-ins] [-u <__user__>] <__command__> [--] [<__args__>...] +
+*sudo* (-i | -s) [-n] [-k] [-u <__user__>] [<__command__> [--] [<__args__>...]] +
+*sudo* [-insk] [-u <__user__>] <__command__> [--] [<__args__>...] +
 *sudo* [-h]
 
 
