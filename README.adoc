@@ -1,7 +1,7 @@
 = doas sudo shim
 :proj-name: doas-sudo-shim
 :gh-name: jirutka/{proj-name}
-:version: 0.1.1
+:version: 0.1.2
 
 This is a shim for the `sudo` command that utilizes https://www.mankier.com/1/doas[doas].
 It supports only a subset of the `sudo` options (both short and long variants) that have an equivalent in `doas`, plus option `-i` (`--login`).
