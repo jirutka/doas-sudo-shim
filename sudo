@@ -77,6 +77,10 @@ if [ $# -eq 0 ]; then
 	else
 		_doas $flag_s
 	fi
+elif [ "$flag_i" ] && [ "$flag_k" ]; then
+	_doas -- "$(user_shell)" -L -l -c 'cd "$HOME"; "$0" "$@"' "$@"
+elif [ "$flag_s" ] && [ "$flag_k" ]; then
+	_doas -- "${SHELL:-$(user_shell)}" -L -c '"$0" "$@"' "$@"
 elif [ "$flag_i" ]; then
 	_doas -- "$(user_shell)" -l -c 'cd "$HOME"; "$0" "$@"' "$@"
 elif [ "$flag_s" ]; then
