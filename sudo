@@ -4,8 +4,8 @@ set -u
 help() {
 	cat <<-EOF
 	Usage:
-	  sudo (-i | -s) [-k] [-n] [-u <user>] [<command> [--] [<args>...]]
-	  sudo [-ikns] [-u <user>] <command> [--] [<args>...]
+	  sudo (-i | -s) [-k] [-v] [-n] [-u <user>] [<command> [--] [<args>...]]
+	  sudo [-iknsv] [-u <user>] <command> [--] [<args>...]
 	  sudo -k
 	  sudo [-h]
 
@@ -56,12 +56,13 @@ while [ $# -gt 0 ]; do
 		-k | --reset-timestamp) flag_k='-k' ;;
 		-n | --non-interactive) flag_n='-n' ;;
 		-s | --shell) flag_s='-s' ;;
+		-v | --refresh-timestamp) doas cp >/dev/null 2>&1; exit 0 ;;
 		-h | --help) help; exit 0 ;;
 		-u | --user) set_user "$1" "${2-}"; shift ;;
 		--user=*) set_user '--user' "${1#--user=}" ;;
 		--) shift; break ;;
 		--*) die "unrecognized option '$1'" ;;
-		# Parse clustered short options (e.g. -ikns, -uuser).
+		# Parse clustered short options (e.g. -iknsv, -uuser).
 		-?*)
 			opts=${1#-}
 			while [ "$opts" ]; do
@@ -70,6 +71,7 @@ while [ $# -gt 0 ]; do
 					k*) flag_k='-k' ;;
 					n*) flag_n='-n' ;;
 					s*) flag_s='-s' ;;
+					v*) doas cp >/dev/null 2>&1; exit 0 ;;
 					h*) help; exit 0 ;;
 					u*)
 						if [ "$opts" != 'u' ]; then
